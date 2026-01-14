@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>| Algorithm Sorting</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Noto+Sans+Bengali:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Animation Libraries -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <!-- Tailwind for Layout Base -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        :root {
+            --bg-primary: #f8fafc;
+            --bg-secondary: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --accent: #0ea5e9;
+            --card-border: #e2e8f0;
+            --nav-bg: rgba(255, 255, 255, 0.8);
+        }
+
+        [data-theme='dark'] {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --accent: #38bdf8;
+            --card-border: #334155;
+            --nav-bg: rgba(15, 23, 42, 0.8);
+        }
+
+        [data-theme='dark-red'] {
+            --bg-primary: #2d0606;
+            --bg-secondary: #450a0a;
+            --text-main: #fef2f2;
+            --text-muted: #fca5a5;
+            --accent: #f87171;
+            --card-border: #7f1d1d;
+            --nav-bg: rgba(45, 6, 6, 0.8);
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            font-family: 'Outfit', sans-serif;
+            transition: background-color 0.5s ease, color 0.5s ease;
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+        }
+
+        .bn { font-family: 'Noto Sans Bengali', sans-serif; }
+
+        /* Custom Animations */
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+
+        @keyframes pulse-glow {
+            0% { box-shadow: 0 0 0 0 rgba(14, 165, 233, 0.4); }
+            70% { box-shadow: 0 0 0 15px rgba(14, 165, 233, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(14, 165, 233, 0); }
+        }
+
+        .floating-icon {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        /* Navbar Glassmorphism */
+        nav {
+            background: var(--nav-bg);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--card-border);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        /* Hero Section Animation */
+        .hero-gradient {
+            background: radial-gradient(circle at top right, var(--accent), transparent 50%);
+            opacity: 0.15;
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        /* 3D Visualizer Mockup */
+        .visual-container {
+            background: var(--bg-secondary);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            height: 400px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            gap: 8px;
+            padding: 30px;
+            perspective: 1000px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        .bar {
+            background: linear-gradient(to top, var(--accent), #94a3b8);
+            width: 30px;
+            border-radius: 8px 8px 2px 2px;
+            transition: height 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), transform 0.3s;
+            transform-style: preserve-3d;
+            box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .bar::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        }
+
+        .bar:hover {
+            transform: translateZ(30px) scale(1.15);
+            filter: brightness(1.2);
+            cursor: pointer;
+        }
+
+        /* Cards */
+        .algo-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--card-border);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .algo-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 4px;
+            background: var(--accent);
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+            transform-origin: left;
+        }
+
+        .algo-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .algo-card:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Search Bar Styles */
+        #search-input {
+            background: var(--bg-primary);
+            border: 1px solid var(--card-border);
+            color: var(--text-main);
+            transition: all 0.3s ease;
+        }
+
+        #search-input:focus {
+            width: 110%;
+            box-shadow: 0 0 20px rgba(14, 165, 233, 0.2);
+        }
+
+        /* Scroll Progress Bar */
+        #scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 4px;
+            background: var(--accent);
+            z-index: 1001;
+            transition: width 0.1s ease;
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 768px) {
+            .mobile-menu { display: none; }
+            .mobile-menu.active { display: flex; }
+            .visual-container { height: 250px; padding: 15px; }
+            .bar { width: 15px; gap: 4px; }
+        }
+    </style>
+</head>
+<body data-theme="light">
+
+    <div id="scroll-progress"></div>
+
+    <!-- Navigation -->
+    <nav class="px-6 py-4">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-2 group cursor-pointer">
+                <div class="bg-[var(--accent)] p-2 rounded-lg group-hover:rotate-12 transition-transform">
+                    <i class="fa-solid fa-layer-group text-xl text-white"></i>
+                </div>
+                <span class="font-bold text-xl tracking-tight">Sorting</span>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="hidden md:flex relative w-1/3">
+                <input type="text" id="search-input" placeholder="Search algorithms (e.g. Bubble)..." 
+                       class="w-full pl-10 pr-4 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-[var(--accent)]">
+                <i class="fa-solid fa-magnifying-glass absolute left-4 top-3 text-[var(--text-muted)]"></i>
+            </div>
+
+            <!-- Controls -->
+            <div class="flex items-center gap-6">
+                <button onclick="toggleTheme()" class="text-xl p-2 hover:bg-[var(--bg-primary)] rounded-full transition-all hover:rotate-180" title="Change Theme">
+                    <i id="theme-icon" class="fa-solid fa-sun"></i>
+                </button>
+                <div class="hidden lg:flex gap-8 font-medium text-[var(--text-muted)]">
+                    <a href="#home" class="relative group py-2">
+                        Home
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-[var(--accent)] transition-all group-hover:w-full"></span>
+                    </a>
+                    <a href="#algorithms" class="relative group py-2">
+                        Algorithms
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-[var(--accent)] transition-all group-hover:w-full"></span>
+                    </a>
+                    <a href="#comparison" class="relative group py-2">
+                        Compare
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-[var(--accent)] transition-all group-hover:w-full"></span>
+                    </a>
+                    <a href="#team" class="relative group py-2">
+                        Team
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-[var(--accent)] transition-all group-hover:w-full"></span>
+                    </a>
+                </div>
+                <button class="md:hidden text-2xl" onclick="document.getElementById('mobile-nav').classList.toggle('active')">
+                    <i class="fa-solid fa-bars-staggered"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Nav Overlay -->
+    <div id="mobile-nav" class="mobile-menu fixed inset-0 bg-[var(--bg-secondary)] z-[999] flex-col items-center justify-center gap-8 text-2xl font-bold hidden">
+        <button class="absolute top-8 right-8" onclick="document.getElementById('mobile-nav').classList.remove('active')"><i class="fa-solid fa-xmark"></i></button>
+        <a href="#home" class="bn" onclick="document.getElementById('mobile-nav').classList.remove('active')">মূল পাতা</a>
+        <a href="#algorithms" class="bn" onclick="document.getElementById('mobile-nav').classList.remove('active')">অ্যালগরিদম</a>
+        <a href="#comparison" class="bn" onclick="document.getElementById('mobile-nav').classList.remove('active')">তুলনা</a>
+        <a href="#team" class="bn" onclick="document.getElementById('mobile-nav').classList.remove('active')">টিম</a>
+    </div>
+
+    <!-- Hero Section -->
+    <header id="home" class="relative pt-32 pb-20 px-6 overflow-hidden min-h-screen flex items-center">
+        <div class="hero-gradient"></div>
+        
+        <!-- Abstract Animated Shapes -->
+        <div class="absolute top-40 left-10 w-32 h-32 bg-[var(--accent)] opacity-10 rounded-full floating-icon blur-2xl"></div>
+        <div class="absolute bottom-20 right-20 w-48 h-48 bg-purple-500 opacity-10 rounded-full floating-icon blur-3xl" style="animation-delay: -2s"></div>
+
+        <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
+            <div data-aos="fade-right">
+                <span class="inline-block px-4 py-1 rounded-full bg-[var(--accent)] bg-opacity-10 text-[var(--accent)] font-semibold mb-6 border border-[var(--accent)] border-opacity-20">
+                    <i class="fa-solid fa-bolt-lightning mr-2"></i>Interactive Learning
+                </span>
+                <h1 class="text-6xl lg:text-8xl font-bold leading-tight mb-6">
+                    Visualize <br><span class="text-[var(--accent)]">Sorting</span> Flow
+                </h1>
+                <p class="text-xl text-[var(--text-muted)] mb-8 max-w-lg">
+                    Witness the elegance of computational logic. Master Bubble, Merge, Insertion, and Selection sorts through immersive 3D simulations.
+                </p>
+                <div class="bg-[var(--bg-secondary)] border border-[var(--card-border)] p-4 rounded-2xl mb-10 shadow-sm inline-block">
+                    <p class="bn text-2xl text-[var(--accent)] font-semibold flex items-center gap-3">
+                        <i class="fa-solid fa-language"></i>
+                        অ্যালগরিদমের লজিক বুঝুন সহজ বাংলায়।
+                    </p>
+                </div>
+                <div class="flex flex-wrap gap-5">
+                    <a href="#algorithms" class="bg-[var(--accent)] text-white px-10 py-5 rounded-2xl font-bold shadow-xl hover:scale-105 active:scale-95 transition-all flex items-center gap-3" style="animation: pulse-glow 2s infinite">
+                        Explore Algorithms <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                    <button onclick="randomizeBars()" class="bg-[var(--bg-secondary)] border border-[var(--card-border)] px-10 py-5 rounded-2xl font-bold hover:bg-[var(--bg-primary)] hover:border-[var(--accent)] transition-all flex items-center gap-3">
+                        <i class="fa-solid fa-shuffle"></i> Randomize Data
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Live 3D Visualizer -->
+            <div class="relative" data-aos="zoom-in" data-aos-delay="200">
+                <div class="visual-container shadow-2xl" id="main-visualizer">
+                    <!-- Bars generated by JS -->
+                </div>
+                <!-- Controls Overlay -->
+                <div class="absolute -bottom-6 left-1/2 -translate-x-1/2 flex gap-3 bg-[var(--bg-secondary)] p-3 rounded-2xl shadow-xl border border-[var(--card-border)]">
+                    <button onclick="randomizeBars()" class="p-3 hover:text-[var(--accent)] transition" title="Shuffle"><i class="fa-solid fa-rotate"></i></button>
+                    <div class="w-px h-6 bg-[var(--card-border)] my-auto"></div>
+                    <button onclick="randomizeBars()" class="px-4 py-2 bg-[var(--accent)] text-white rounded-lg text-sm font-bold">Play Animation</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Algorithms Section -->
+    <section id="algorithms" class="py-32 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-20" data-aos="fade-up">
+                <h2 class="text-5xl font-bold mb-6">Core Algorithms</h2>
+                <div class="w-24 h-1.5 bg-[var(--accent)] mx-auto mb-8 rounded-full"></div>
+                <p class="text-xl text-[var(--text-muted)] max-w-2xl mx-auto">Detailed technical breakdowns with space-time complexity and bilingual logic explanation.</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-10">
+                <!-- Selection Sort -->
+                <div class="algo-card p-10 rounded-[2.5rem]" data-name="selection sort" data-aos="fade-up">
+                    <div class="flex justify-between items-center mb-8">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-orange-500 bg-opacity-10 text-orange-500 rounded-xl flex items-center justify-center text-xl">
+                                <i class="fa-solid fa-hand-pointer"></i>
+                            </div>
+                            <h3 class="text-3xl font-bold">Selection Sort</h3>
+                        </div>
+                        <span class="bg-orange-500 bg-opacity-10 text-orange-500 px-4 py-1.5 rounded-full text-sm font-bold border border-orange-500 border-opacity-20">O(n²)</span>
+                    </div>
+                    <p class="text-lg text-[var(--text-muted)] mb-6">Repeatedly finds the smallest element from the unsorted part and swaps it to the front.</p>
+                    <div class="bg-[var(--bg-primary)] p-6 rounded-2xl border border-[var(--card-border)] mb-8">
+                        <p class="bn text-xl leading-relaxed">এটি বারবার আনসর্টেড অংশ থেকে সবচেয়ে ছোট উপাদানটি খুঁজে বের করে এবং সেটিকে তালিকার শুরুতে নিয়ে আসে।</p>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="p-4 bg-[var(--bg-primary)] rounded-xl text-sm">
+                            <p class="text-[var(--text-muted)] mb-1">Space Complexity</p>
+                            <p class="font-bold">O(1) Auxiliary</p>
+                        </div>
+                        <div class="p-4 bg-[var(--bg-primary)] rounded-xl text-sm">
+                            <p class="text-[var(--text-muted)] mb-1">Stability</p>
+                            <p class="font-bold text-red-500">Unstable</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bubble Sort -->
+                <div class="algo-card p-10 rounded-[2.5rem]" data-name="bubble sort" data-aos="fade-up" data-aos-delay="100">
+                    <div class="flex justify-between items-center mb-8">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-blue-500 bg-opacity-10 text-blue-500 rounded-xl flex items-center justify-center text-xl">
+                                <i class="fa-solid fa-soap"></i>
+                            </div>
+                            <h3 class="text-3xl font-bold">Bubble Sort</h3>
+                        </div>
+                        <span class="bg-blue-500 bg-opacity-10 text-blue-500 px-4 py-1.5 rounded-full text-sm font-bold border border-blue-500 border-opacity-20">O(n²)</span>
+                    </div>
+                    <p class="text-lg text-[var(--text-muted)] mb-6">Pairs of adjacent elements are compared, and they are swapped if they are in the wrong order.</p>
+                    <div class="bg-[var(--bg-primary)] p-6 rounded-2xl border border-[var(--card-border)] mb-8">
+                        <p class="bn text-xl leading-relaxed">এটি পাশাপাশি দুটি উপাদানের তুলনা করে এবং ভুল ক্রমে থাকলে তাদের জায়গা পরিবর্তন করে।</p>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="p-4 bg-[var(--bg-primary)] rounded-xl text-sm">
+                            <p class="text-[var(--text-muted)] mb-1">Best Case</p>
+                            <p class="font-bold text-green-500">O(n)</p>
+                        </div>
+                        <div class="p-4 bg-[var(--bg-primary)] rounded-xl text-sm">
+                            <p class="text-[var(--text-muted)] mb-1">Stability</p>
+                            <p class="font-bold text-green-500">Stable</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Insertion Sort -->
+                <div class="algo-card p-10 rounded-[2.5rem]" data-name="insertion sort" data-aos="fade-up">
+                    <div class="flex justify-between items-center mb-8">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-green-500 bg-opacity-10 text-green-500 rounded-xl flex items-center justify-center text-xl">
+                                <i class="fa-solid fa-arrows-down-to-line"></i>
+                            </div>
+                            <h3 class="text-3xl font-bold">Insertion Sort</h3>
+                        </div>
+                        <span class="bg-green-500 bg-opacity-10 text-green-500 px-4 py-1.5 rounded-full text-sm font-bold border border-green-500 border-opacity-20">O(n²)</span>
+                    </div>
+                    <p class="text-lg text-[var(--text-muted)] mb-6">Builds the sorted array one item at a time by picking the next item and inserting it into place.</p>
+                    <div class="bg-[var(--bg-primary)] p-6 rounded-2xl border border-[var(--card-border)] mb-8">
+                        <p class="bn text-xl leading-relaxed">এটি একে একে প্রতিটি উপাদান নিয়ে তার বাম পাশের সর্টেড অংশে সঠিক অবস্থানে বসিয়ে দেয়।</p>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="p-4 bg-[var(--bg-primary)] rounded-xl text-sm">
+                            <p class="text-[var(--text-muted)] mb-1">Adaptive</p>
+                            <p class="font-bold text-green-500">Yes</p>
+                        </div>
+                        <div class="p-4 bg-[var(--bg-primary)] rounded-xl text-sm">
+                            <p class="text-[var(--text-muted)] mb-1">Sorting</p>
+                            <p class="font-bold">In-place</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Merge Sort -->
+                <div class="algo-card p-10 rounded-[2.5rem]" data-name="merge sort" data-aos="fade-up" data-aos-delay="100">
+                    <div class="flex justify-between items-center mb-8">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-purple-500 bg-opacity-10 text-purple-500 rounded-xl flex items-center justify-center text-xl">
+                                <i class="fa-solid fa-diagram-project"></i>
+                            </div>
+                            <h3 class="text-3xl font-bold">Merge Sort</h3>
+                        </div>
+                        <span class="bg-purple-500 bg-opacity-10 text-purple-500 px-4 py-1.5 rounded-full text-sm font-bold border border-purple-500 border-opacity-20">O(n log n)</span>
+                    </div>
+                    <p class="text-lg text-[var(--text-muted)] mb-6">A recursive divide-and-conquer algorithm that splits the array and merges them back.</p>
+                    <div class="bg-[var(--bg-primary)] p-6 rounded-2xl border border-[var(--card-border)] mb-8">
+                        <p class="bn text-xl leading-relaxed">এটি অ্যারেকে অর্ধেক করে ভাগ করে এবং পরে সর্টেড অবস্থায় সেগুলোকে মার্জ করে।</p>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="p-4 bg-[var(--bg-primary)] rounded-xl text-sm">
+                            <p class="text-[var(--text-muted)] mb-1">Space Complexity</p>
+                            <p class="font-bold text-orange-500">O(n)</p>
+                        </div>
+                        <div class="p-4 bg-[var(--bg-primary)] rounded-xl text-sm">
+                            <p class="text-[var(--text-muted)] mb-1">Performance</p>
+                            <p class="font-bold text-green-500">Excellent</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Comparison Table -->
+    <section id="comparison" class="py-32 px-6 bg-[var(--bg-secondary)] overflow-hidden">
+        <div class="max-w-5xl mx-auto" data-aos="fade-up">
+            <h2 class="text-4xl font-bold mb-4 text-center">Efficiency Matrix</h2>
+            <p class="text-center text-[var(--text-muted)] mb-16">Compare performance metrics across different scenarios.</p>
+            <div class="overflow-x-auto rounded-3xl border border-[var(--card-border)] shadow-xl">
+                <table class="w-full border-collapse">
+                    <thead>
+                        <tr class="text-left bg-[var(--bg-primary)]">
+                            <th class="p-8 font-bold border-b border-[var(--card-border)]">Algorithm</th>
+                            <th class="p-8 font-bold border-b border-[var(--card-border)]">Best Case</th>
+                            <th class="p-8 font-bold border-b border-[var(--card-border)]">Average</th>
+                            <th class="p-8 font-bold border-b border-[var(--card-border)]">Worst</th>
+                            <th class="p-8 font-bold border-b border-[var(--card-border)]">Space</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-[var(--text-muted)] bg-[var(--bg-secondary)]">
+                        <tr class="hover:bg-[var(--bg-primary)] transition">
+                            <td class="p-8 font-bold text-[var(--text-main)]">Selection Sort</td>
+                            <td class="p-8">Ω(n²)</td>
+                            <td class="p-8">Θ(n²)</td>
+                            <td class="p-8">O(n²)</td>
+                            <td class="p-8">O(1)</td>
+                        </tr>
+                        <tr class="hover:bg-[var(--bg-primary)] transition">
+                            <td class="p-8 font-bold text-[var(--text-main)]">Bubble Sort</td>
+                            <td class="p-8 text-green-500 font-semibold">Ω(n)</td>
+                            <td class="p-8">Θ(n²)</td>
+                            <td class="p-8">O(n²)</td>
+                            <td class="p-8">O(1)</td>
+                        </tr>
+                        <tr class="hover:bg-[var(--bg-primary)] transition">
+                            <td class="p-8 font-bold text-[var(--text-main)]">Insertion Sort</td>
+                            <td class="p-8 text-green-500 font-semibold">Ω(n)</td>
+                            <td class="p-8">Θ(n²)</td>
+                            <td class="p-8">O(n²)</td>
+                            <td class="p-8">O(1)</td>
+                        </tr>
+                        <tr class="hover:bg-[var(--bg-primary)] transition">
+                            <td class="p-8 font-bold text-[var(--text-main)]">Merge Sort</td>
+                            <td class="p-8 text-green-500 font-semibold">Ω(n log n)</td>
+                            <td class="p-8 text-green-500 font-semibold">Θ(n log n)</td>
+                            <td class="p-8 text-green-500 font-semibold">O(n log n)</td>
+                            <td class="p-8 text-orange-500">O(n)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <footer id="team" class="py-32 px-6">
+        <div class="max-w-7xl mx-auto text-center">
+            <h2 class="text-4xl font-bold mb-20" data-aos="fade-up">Presented By</h2>
+            <div class="grid sm:grid-cols-3 gap-16">
+                <div class="group" data-aos="zoom-in">
+                    <div class="w-32 h-32 bg-[var(--bg-secondary)] border border-[var(--card-border)] rounded-3xl flex items-center justify-center mx-auto mb-8 group-hover:rotate-6 group-hover:scale-110 transition-all duration-500 shadow-xl relative">
+                        <i class="fa-solid fa-code text-4xl text-[var(--accent)]"></i>
+                        <div class="absolute -top-3 -right-3 w-8 h-8 bg-[var(--accent)] rounded-full text-white flex items-center justify-center text-xs font-bold">01</div>
+                    </div>
+                    <h3 class="font-bold text-2xl mb-2">Habibul Bari</h3>
+                    <p class="text-[var(--text-muted)] tracking-wider">ID: e243042</p>
+                </div>
+                <div class="group" data-aos="zoom-in" data-aos-delay="100">
+                    <div class="w-32 h-32 bg-[var(--bg-secondary)] border border-[var(--card-border)] rounded-3xl flex items-center justify-center mx-auto mb-8 group-hover:-rotate-6 group-hover:scale-110 transition-all duration-500 shadow-xl relative">
+                        <i class="fa-solid fa-microchip text-4xl text-[var(--accent)]"></i>
+                        <div class="absolute -top-3 -right-3 w-8 h-8 bg-[var(--accent)] rounded-full text-white flex items-center justify-center text-xs font-bold">02</div>
+                    </div>
+                    <h3 class="font-bold text-2xl mb-2">Abdullah Al Nahin</h3>
+                    <p class="text-[var(--text-muted)] tracking-wider">ID: e243015</p>
+                </div>
+                <div class="group" data-aos="zoom-in" data-aos-delay="200">
+                    <div class="w-32 h-32 bg-[var(--bg-secondary)] border border-[var(--card-border)] rounded-3xl flex items-center justify-center mx-auto mb-8 group-hover:rotate-6 group-hover:scale-110 transition-all duration-500 shadow-xl relative">
+                        <i class="fa-solid fa-terminal text-4xl text-[var(--accent)]"></i>
+                        <div class="absolute -top-3 -right-3 w-8 h-8 bg-[var(--accent)] rounded-full text-white flex items-center justify-center text-xs font-bold">03</div>
+                    </div>
+                    <h3 class="font-bold text-2xl mb-2">Fahimual Nahid</h3>
+                    <p class="text-[var(--text-muted)] tracking-wider">ID: e243014</p>
+                </div>
+            </div>
+            
+            <div class="mt-32 pt-10 border-t border-[var(--card-border)] flex flex-col md:flex-row justify-between items-center gap-6">
+                <p class="text-[var(--text-muted)] text-sm">© 2026 Computer Science Department | Presentation Project</p>
+                <div class="flex gap-6 text-[var(--text-muted)] text-xl">
+                    <a href="#" class="hover:text-[var(--accent)] transition"><i class="fa-brands fa-github"></i></a>
+                    <a href="#" class="hover:text-[var(--accent)] transition"><i class="fa-brands fa-linkedin"></i></a>
+                    <a href="#" class="hover:text-[var(--accent)] transition"><i class="fa-solid fa-envelope"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        // Initialize AOS
+        AOS.init({
+            duration: 1000,
+            once: true,
+            easing: 'ease-out-cubic'
+        });
+
+        // Theme Engine
+        const themes = ['light', 'dark', 'dark-red'];
+        let currentThemeIndex = 0;
+
+        function toggleTheme() {
+            currentThemeIndex = (currentThemeIndex + 1) % themes.length;
+            const newTheme = themes[currentThemeIndex];
+            document.body.setAttribute('data-theme', newTheme);
+            
+            const icon = document.getElementById('theme-icon');
+            if(newTheme === 'light') icon.className = 'fa-solid fa-sun';
+            else if(newTheme === 'dark') icon.className = 'fa-solid fa-moon';
+            else icon.className = 'fa-solid fa-fire-flame-curved';
+            
+            // Refresh visualizations on theme change for color consistency
+            randomizeBars();
+        }
+
+        // Scroll Progress
+        window.onscroll = () => {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById("scroll-progress").style.width = scrolled + "%";
+            
+            // Navbar shrink effect
+            const nav = document.querySelector('nav');
+            if (winScroll > 50) {
+                nav.style.padding = '0.75rem 1.5rem';
+                nav.style.boxShadow = '0 10px 30px -10px rgba(0,0,0,0.1)';
+            } else {
+                nav.style.padding = '1rem 1.5rem';
+                nav.style.boxShadow = 'none';
+            }
+        };
+
+        // Search Functionality
+        document.getElementById('search-input').addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase();
+            const cards = document.querySelectorAll('.algo-card');
+            
+            cards.forEach(card => {
+                const name = card.getAttribute('data-name');
+                if (name.includes(term)) {
+                    card.style.display = 'block';
+                    card.classList.add('aos-animate'); // Re-trigger animations
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+
+        // 3D Visualizer Logic
+        function randomizeBars() {
+            const container = document.getElementById('main-visualizer');
+            container.innerHTML = '';
+            const barCount = window.innerWidth < 768 ? 12 : 24;
+            
+            for(let i = 0; i < barCount; i++) {
+                const heightValue = Math.floor(Math.random() * 80) + 10;
+                const bar = document.createElement('div');
+                bar.className = 'bar';
+                bar.style.height = `0%`; // Start at 0 for animation
+                
+                // Staggered appearance
+                setTimeout(() => {
+                    bar.style.height = `${heightValue}%`;
+                }, i * 30);
+
+                // Individual bar interactions
+                bar.addEventListener('mouseenter', () => {
+                    bar.style.filter = 'brightness(1.5)';
+                });
+                bar.addEventListener('mouseleave', () => {
+                    bar.style.filter = 'brightness(1)';
+                });
+
+                container.appendChild(bar);
+            }
+        }
+
+        // Initialization
+        window.onload = () => {
+            randomizeBars();
+            
+            // Smooth reveal for search bar
+            document.getElementById('search-input').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('search-input').style.opacity = '1';
+                document.getElementById('search-input').style.transition = 'opacity 1s ease';
+            }, 500);
+        };
+
+        // Handle resize
+        let resizeTimer;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(randomizeBars, 200);
+        });
+    </script>
+</body>
+</html>
